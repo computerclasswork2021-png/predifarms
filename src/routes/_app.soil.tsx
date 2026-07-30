@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { FlaskConical } from "lucide-react";
 import { useFarm } from "@/lib/farm-store";
 import { Meter, PageBody, PageHeader, Panel, Pill, Reveal, SectionHeading } from "@/components/app/primitives";
+import { UploadAnalyzer } from "@/components/app/upload-analyzer";
 
 export const Route = createFileRoute("/_app/soil")({
   head: () => ({
