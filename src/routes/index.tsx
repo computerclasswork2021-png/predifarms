@@ -18,7 +18,7 @@ export const Route = createFileRoute("/")({
       {
         property: "og:description",
         content:
-          "A daily action plan built from live weather, soil and crop stage — with the reason behind every call.",
+          "Weather, soil moisture, crop stage and mandi prices reconciled into a single ordered plan for the day. Built for smallholder farms.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
