@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { FlaskConical } from "lucide-react";
 import { useFarm } from "@/lib/farm-store";
 import { Meter, PageBody, PageHeader, Panel, Pill, Reveal, SectionHeading } from "@/components/app/primitives";
+import { UploadAnalyzer } from "@/components/app/upload-analyzer";
 
 export const Route = createFileRoute("/_app/soil")({
   head: () => ({
@@ -27,6 +28,15 @@ function SoilPage() {
         lede="The same nitrogen number means different things at tillering and at ripening. Every reading below is judged against the stage of the crop standing on that block."
       />
       <PageBody>
+        <div className="mb-6">
+          <UploadAnalyzer
+            kind="soil"
+            accept="image/*,.pdf,.csv,.txt"
+            title="Upload a soil health report"
+            hint="Photo, scan or PDF of your soil health card or lab sheet — the AI reads the values and interprets them."
+            contextPlaceholder="e.g. Wheat sown 20 days ago on Block A, canal irrigated"
+          />
+        </div>
         <div className="grid gap-4 lg:grid-cols-2">
           {blocks.map((b, i) => {
             const state = cropStateFor(b.id);
