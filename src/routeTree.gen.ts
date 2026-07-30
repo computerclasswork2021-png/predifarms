@@ -10,33 +10,215 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppRouteImport } from './routes/_app'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as AppAssistantRouteImport } from './routes/_app.assistant'
+import { Route as AppCropsRouteImport } from './routes/_app.crops'
+import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
+import { Route as AppDiseaseRouteImport } from './routes/_app.disease'
+import { Route as AppFieldsRouteImport } from './routes/_app.fields'
+import { Route as AppMandiRouteImport } from './routes/_app.mandi'
+import { Route as AppReportsRouteImport } from './routes/_app.reports'
+import { Route as AppSettingsRouteImport } from './routes/_app.settings'
+import { Route as AppSimulatorRouteImport } from './routes/_app.simulator'
+import { Route as AppSoilRouteImport } from './routes/_app.soil'
+import { Route as AppWeatherRouteImport } from './routes/_app.weather'
+import { Route as AppFieldsBlockIdRouteImport } from './routes/_app.fields.$blockId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppAssistantRoute = AppAssistantRouteImport.update({
+  id: '/assistant',
+  path: '/assistant',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCropsRoute = AppCropsRouteImport.update({
+  id: '/crops',
+  path: '/crops',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDashboardRoute = AppDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDiseaseRoute = AppDiseaseRouteImport.update({
+  id: '/disease',
+  path: '/disease',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppFieldsRoute = AppFieldsRouteImport.update({
+  id: '/fields',
+  path: '/fields',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMandiRoute = AppMandiRouteImport.update({
+  id: '/mandi',
+  path: '/mandi',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppReportsRoute = AppReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSettingsRoute = AppSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSimulatorRoute = AppSimulatorRouteImport.update({
+  id: '/simulator',
+  path: '/simulator',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSoilRoute = AppSoilRouteImport.update({
+  id: '/soil',
+  path: '/soil',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppWeatherRoute = AppWeatherRouteImport.update({
+  id: '/weather',
+  path: '/weather',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppFieldsBlockIdRoute = AppFieldsBlockIdRouteImport.update({
+  id: '/$blockId',
+  path: '/$blockId',
+  getParentRoute: () => AppFieldsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/onboarding': typeof OnboardingRoute
+  '/assistant': typeof AppAssistantRoute
+  '/crops': typeof AppCropsRoute
+  '/dashboard': typeof AppDashboardRoute
+  '/disease': typeof AppDiseaseRoute
+  '/fields': typeof AppFieldsRouteWithChildren
+  '/mandi': typeof AppMandiRoute
+  '/reports': typeof AppReportsRoute
+  '/settings': typeof AppSettingsRoute
+  '/simulator': typeof AppSimulatorRoute
+  '/soil': typeof AppSoilRoute
+  '/weather': typeof AppWeatherRoute
+  '/fields/$blockId': typeof AppFieldsBlockIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/onboarding': typeof OnboardingRoute
+  '/assistant': typeof AppAssistantRoute
+  '/crops': typeof AppCropsRoute
+  '/dashboard': typeof AppDashboardRoute
+  '/disease': typeof AppDiseaseRoute
+  '/fields': typeof AppFieldsRouteWithChildren
+  '/mandi': typeof AppMandiRoute
+  '/reports': typeof AppReportsRoute
+  '/settings': typeof AppSettingsRoute
+  '/simulator': typeof AppSimulatorRoute
+  '/soil': typeof AppSoilRoute
+  '/weather': typeof AppWeatherRoute
+  '/fields/$blockId': typeof AppFieldsBlockIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_app': typeof AppRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/onboarding': typeof OnboardingRoute
+  '/_app/assistant': typeof AppAssistantRoute
+  '/_app/crops': typeof AppCropsRoute
+  '/_app/dashboard': typeof AppDashboardRoute
+  '/_app/disease': typeof AppDiseaseRoute
+  '/_app/fields': typeof AppFieldsRouteWithChildren
+  '/_app/mandi': typeof AppMandiRoute
+  '/_app/reports': typeof AppReportsRoute
+  '/_app/settings': typeof AppSettingsRoute
+  '/_app/simulator': typeof AppSimulatorRoute
+  '/_app/soil': typeof AppSoilRoute
+  '/_app/weather': typeof AppWeatherRoute
+  '/_app/fields/$blockId': typeof AppFieldsBlockIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/onboarding'
+    | '/assistant'
+    | '/crops'
+    | '/dashboard'
+    | '/disease'
+    | '/fields'
+    | '/mandi'
+    | '/reports'
+    | '/settings'
+    | '/simulator'
+    | '/soil'
+    | '/weather'
+    | '/fields/$blockId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/onboarding'
+    | '/assistant'
+    | '/crops'
+    | '/dashboard'
+    | '/disease'
+    | '/fields'
+    | '/mandi'
+    | '/reports'
+    | '/settings'
+    | '/simulator'
+    | '/soil'
+    | '/weather'
+    | '/fields/$blockId'
+  id:
+    | '__root__'
+    | '/'
+    | '/_app'
+    | '/auth'
+    | '/onboarding'
+    | '/_app/assistant'
+    | '/_app/crops'
+    | '/_app/dashboard'
+    | '/_app/disease'
+    | '/_app/fields'
+    | '/_app/mandi'
+    | '/_app/reports'
+    | '/_app/settings'
+    | '/_app/simulator'
+    | '/_app/soil'
+    | '/_app/weather'
+    | '/_app/fields/$blockId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  OnboardingRoute: typeof OnboardingRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,22 +230,162 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app/assistant': {
+      id: '/_app/assistant'
+      path: '/assistant'
+      fullPath: '/assistant'
+      preLoaderRoute: typeof AppAssistantRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/crops': {
+      id: '/_app/crops'
+      path: '/crops'
+      fullPath: '/crops'
+      preLoaderRoute: typeof AppCropsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/dashboard': {
+      id: '/_app/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AppDashboardRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/disease': {
+      id: '/_app/disease'
+      path: '/disease'
+      fullPath: '/disease'
+      preLoaderRoute: typeof AppDiseaseRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/fields': {
+      id: '/_app/fields'
+      path: '/fields'
+      fullPath: '/fields'
+      preLoaderRoute: typeof AppFieldsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/mandi': {
+      id: '/_app/mandi'
+      path: '/mandi'
+      fullPath: '/mandi'
+      preLoaderRoute: typeof AppMandiRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/reports': {
+      id: '/_app/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof AppReportsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/settings': {
+      id: '/_app/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/simulator': {
+      id: '/_app/simulator'
+      path: '/simulator'
+      fullPath: '/simulator'
+      preLoaderRoute: typeof AppSimulatorRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/soil': {
+      id: '/_app/soil'
+      path: '/soil'
+      fullPath: '/soil'
+      preLoaderRoute: typeof AppSoilRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/weather': {
+      id: '/_app/weather'
+      path: '/weather'
+      fullPath: '/weather'
+      preLoaderRoute: typeof AppWeatherRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/fields/$blockId': {
+      id: '/_app/fields/$blockId'
+      path: '/$blockId'
+      fullPath: '/fields/$blockId'
+      preLoaderRoute: typeof AppFieldsBlockIdRouteImport
+      parentRoute: typeof AppFieldsRoute
+    }
   }
 }
 
+interface AppFieldsRouteChildren {
+  AppFieldsBlockIdRoute: typeof AppFieldsBlockIdRoute
+}
+
+const AppFieldsRouteChildren: AppFieldsRouteChildren = {
+  AppFieldsBlockIdRoute: AppFieldsBlockIdRoute,
+}
+
+const AppFieldsRouteWithChildren = AppFieldsRoute._addFileChildren(
+  AppFieldsRouteChildren,
+)
+
+interface AppRouteChildren {
+  AppAssistantRoute: typeof AppAssistantRoute
+  AppCropsRoute: typeof AppCropsRoute
+  AppDashboardRoute: typeof AppDashboardRoute
+  AppDiseaseRoute: typeof AppDiseaseRoute
+  AppFieldsRoute: typeof AppFieldsRouteWithChildren
+  AppMandiRoute: typeof AppMandiRoute
+  AppReportsRoute: typeof AppReportsRoute
+  AppSettingsRoute: typeof AppSettingsRoute
+  AppSimulatorRoute: typeof AppSimulatorRoute
+  AppSoilRoute: typeof AppSoilRoute
+  AppWeatherRoute: typeof AppWeatherRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppAssistantRoute: AppAssistantRoute,
+  AppCropsRoute: AppCropsRoute,
+  AppDashboardRoute: AppDashboardRoute,
+  AppDiseaseRoute: AppDiseaseRoute,
+  AppFieldsRoute: AppFieldsRouteWithChildren,
+  AppMandiRoute: AppMandiRoute,
+  AppReportsRoute: AppReportsRoute,
+  AppSettingsRoute: AppSettingsRoute,
+  AppSimulatorRoute: AppSimulatorRoute,
+  AppSoilRoute: AppSoilRoute,
+  AppWeatherRoute: AppWeatherRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppRoute: AppRouteWithChildren,
+  AuthRoute: AuthRoute,
+  OnboardingRoute: OnboardingRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
