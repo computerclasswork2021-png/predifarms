@@ -5,9 +5,11 @@ type Snapshot = Record<string, string | number>;
 
 const buildKeyframes = (from: Snapshot, steps: Snapshot[]) => {
   const keys = new Set<string>([...Object.keys(from), ...steps.flatMap((s) => Object.keys(s))]);
-  const keyframes: Record<string, (string | number | undefined)[]> = {};
+  const keyframes: Record<string, (string | number)[]> = {};
   keys.forEach((k) => {
-    keyframes[k] = [from[k], ...steps.map((s) => s[k])];
+    keyframes[k] = [from[k], ...steps.map((s) => s[k])].filter(
+      (v): v is string | number => v !== undefined,
+    );
   });
   return keyframes;
 };
@@ -95,7 +97,7 @@ export default function BlurText({
           key={`${segment}-${index}`}
           className="inline-block will-change-[transform,filter,opacity]"
           initial={from}
-          animate={inView ? keyframes : from}
+          animate={inView ? (keyframes as never) : from}
           transition={{ duration: totalDuration, times, delay: (index * delay) / 1000 }}
           onAnimationComplete={index === elements.length - 1 ? onAnimationComplete : undefined}
         >
