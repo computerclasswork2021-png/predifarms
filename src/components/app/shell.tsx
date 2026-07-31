@@ -225,6 +225,7 @@ function MobileNavBar() {
 }
 
 export default function AppShell({ children }: { children: ReactNode }) {
+  const t = useT();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
