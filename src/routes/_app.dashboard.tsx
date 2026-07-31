@@ -1,16 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
-import {
-  ArrowUpRight,
-  CalendarClock,
-  CheckCircle2,
-  CloudRain,
-  Droplets,
-  Sparkles,
-  Sprout,
-  Sun,
-  TrendingUp,
-} from "lucide-react";
+import { ArrowUpRight, CalendarClock, CircleCheck as CheckCircle2, CloudRain, Droplets, Sparkles, Sprout, Sun, TrendingUp } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useFarm } from "@/lib/farm-store";
 import {
@@ -33,8 +23,8 @@ import {
   StatTile,
 } from "@/components/app/primitives";
 import FluidGlass from "@/components/reactbits/fluid-glass";
-import Atmosphere from "@/components/app/atmosphere";
 import FarmClock from "@/components/app/farm-clock";
+import { AERIAL_PATCHWORK } from "@/lib/photography";
 import TaskBoard from "@/components/app/task-board";
 import { cn } from "@/lib/utils";
 
@@ -124,25 +114,34 @@ function DashboardPage() {
 
   return (
     <>
-      {/* Living hero — drawn from the real clock and the real forecast */}
-      <div className="relative -mt-4 mb-2 h-56 overflow-hidden sm:h-72">
-        <Atmosphere part={part} condition={current.condition} windKph={current.windKph} />
+      {/* Living hero — drawn from the real clock, forecast and aerial photography */}
+      <div className="relative -mt-4 mb-2 h-64 overflow-hidden sm:h-80">
+        <img
+          src={AERIAL_PATCHWORK.url}
+          alt={AERIAL_PATCHWORK.alt}
+          className="absolute inset-0 h-full w-full object-cover"
+          style={{ objectPosition: AERIAL_PATCHWORK.position }}
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,oklch(0.08_0.02_155/0.35)_0%,oklch(0.08_0.02_155/0.55)_55%,var(--background)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,oklch(0.08_0.02_155/0.5),transparent_55%)]" />
         <div className="relative z-10 flex h-full items-end justify-between gap-6 px-5 pb-6 sm:px-8 lg:px-14">
           <div className="min-w-0">
-            <p className="type-eyebrow text-primary">
+            <p className="type-eyebrow text-primary-foreground/85">
               {season} season · {part}
             </p>
-            <p className="type-numeral mt-3 text-5xl sm:text-6xl">{current.tempC}°</p>
-            <p className="mt-2 text-xs text-muted-foreground">
+            <p className="type-numeral mt-3 text-5xl text-primary-foreground sm:text-6xl">
+              {current.tempC}°
+            </p>
+            <p className="mt-2 text-xs text-primary-foreground/70">
               {current.humidity}% humidity · {current.windKph} kph wind · live for {farm.village}
             </p>
           </div>
           <div className="flex max-w-[13rem] flex-col items-end gap-2 text-right">
             <FarmClock
-              className="rounded-full border border-glass-border bg-surface-1/60 px-3 py-2 backdrop-blur-xl"
+              className="rounded-full border border-primary-foreground/15 bg-primary-foreground/10 px-3 py-2 text-primary-foreground backdrop-blur-xl"
               showDate={false}
             />
-            <p className="text-xs text-muted-foreground">{formatDate(today)}</p>
+            <p className="text-xs text-primary-foreground/70">{formatDate(today)}</p>
           </div>
         </div>
       </div>

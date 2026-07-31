@@ -153,6 +153,8 @@ export interface FieldBlock {
   crop: CropId | null;
   /** days ago the crop was sown; null when fallow */
   sownDaysAgo: number | null;
+  irrigationMethod: string;
+  photoUrl: string | null;
   soil: SoilReading;
   /** 0–100 canopy/health index from the last scan */
   health: number;
@@ -169,6 +171,8 @@ export const BLOCKS: FieldBlock[] = [
     soilType: "Sandy loam",
     crop: "wheat",
     sownDaysAgo: 78,
+    irrigationMethod: "sprinkler",
+    photoUrl: null,
     soil: { n: 182, p: 28, k: 310, ph: 6.8, organicCarbon: 0.62, moisture: 58 },
     health: 82,
     diseaseRisk: 74,
@@ -181,6 +185,8 @@ export const BLOCKS: FieldBlock[] = [
     soilType: "Clay loam",
     crop: "rice",
     sownDaysAgo: 122,
+    irrigationMethod: "flood",
+    photoUrl: null,
     soil: { n: 210, p: 34, k: 285, ph: 7.1, organicCarbon: 0.74, moisture: 76 },
     health: 91,
     diseaseRisk: 18,
@@ -193,6 +199,8 @@ export const BLOCKS: FieldBlock[] = [
     soilType: "Black cotton",
     crop: "soybean",
     sownDaysAgo: 66,
+    irrigationMethod: "rainfed",
+    photoUrl: null,
     soil: { n: 148, p: 19, k: 240, ph: 7.6, organicCarbon: 0.48, moisture: 34 },
     health: 71,
     diseaseRisk: 41,
@@ -205,6 +213,8 @@ export const BLOCKS: FieldBlock[] = [
     soilType: "Sandy loam",
     crop: null,
     sownDaysAgo: null,
+    irrigationMethod: "rainfed",
+    photoUrl: null,
     soil: { n: 165, p: 41, k: 262, ph: 6.5, organicCarbon: 0.58, moisture: 47 },
     health: 0,
     diseaseRisk: 0,

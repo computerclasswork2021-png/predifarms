@@ -43,12 +43,14 @@ export type Database = {
           disease_risk: number
           health: number
           id: string
+          irrigation_method: string
           last_scan_date: string | null
           latitude: number | null
           longitude: number | null
           moisture: number
           name: string
           organic_carbon: number
+          photo_url: string | null
           soil_k: number
           soil_n: number
           soil_p: number
@@ -64,12 +66,14 @@ export type Database = {
           disease_risk?: number
           health?: number
           id?: string
+          irrigation_method?: string
           last_scan_date?: string | null
           latitude?: number | null
           longitude?: number | null
           moisture?: number
           name: string
           organic_carbon?: number
+          photo_url?: string | null
           soil_k?: number
           soil_n?: number
           soil_p?: number
@@ -85,12 +89,14 @@ export type Database = {
           disease_risk?: number
           health?: number
           id?: string
+          irrigation_method?: string
           last_scan_date?: string | null
           latitude?: number | null
           longitude?: number | null
           moisture?: number
           name?: string
           organic_carbon?: number
+          photo_url?: string | null
           soil_k?: number
           soil_n?: number
           soil_p?: number
@@ -100,6 +106,36 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      block_photos: {
+        Row: {
+          block_id: string
+          caption: string | null
+          created_at: string
+          id: string
+          url: string
+        }
+        Insert: {
+          block_id: string
+          caption?: string | null
+          id?: string
+          url: string
+        }
+        Update: {
+          block_id?: string
+          caption?: string | null
+          id?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "block_photos_block_id_fkey"
+            columns: ["block_id"]
+            isOneOne: false
+            referencedRelation: "field_blocks"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {

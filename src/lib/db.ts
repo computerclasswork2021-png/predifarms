@@ -27,6 +27,8 @@ export interface BlockRow {
   soil_type: string;
   crop: string | null;
   sowing_date: string | null;
+  irrigation_method: string;
+  photo_url: string | null;
   soil_n: number;
   soil_p: number;
   soil_k: number;
@@ -38,6 +40,17 @@ export interface BlockRow {
   last_scan_date: string | null;
   latitude: number | null;
   longitude: number | null;
+}
+
+export const IRRIGATION_METHODS = ["rainfed", "drip", "sprinkler", "flood", "canal"] as const;
+export type IrrigationMethod = (typeof IRRIGATION_METHODS)[number];
+
+export interface BlockPhotoRow {
+  id: string;
+  block_id: string;
+  url: string;
+  caption: string | null;
+  created_at: string;
 }
 
 export interface TaskRow {
@@ -69,6 +82,8 @@ export function toFieldBlock(row: BlockRow, today: Date): FieldBlock {
     soilType: row.soil_type,
     crop,
     sownDaysAgo: crop && sown ? Math.max(0, daysBetween(sown, today)) : null,
+    irrigationMethod: row.irrigation_method ?? "rainfed",
+    photoUrl: row.photo_url ?? null,
     soil: {
       n: Number(row.soil_n),
       p: Number(row.soil_p),
@@ -113,6 +128,60 @@ export async function fetchTasks(userId: string) {
     .order("due_date", { ascending: true, nullsFirst: false });
   if (error) throw error;
   return (data ?? []) as TaskRow[];
+}
+
+export async function fetchBlockPhotos(blockIds: string[]) {
+  if (!blockIds.length) return [];
+  const { data, error } = await supabase
+    .from("block_photos")
+    .select("id,block_id,url,caption,created_at")
+    .in("block_id", blockIds)
+    .order("created_at", { ascending: false });
+  if (error) return [];
+  return (data ?? []) as BlockPhotoRow[];
+}
+
+export async function createBlock(input: {
+  userId: string;
+  name: string;
+  areaHa: number;
+  soilType: string;
+  crop: string | null;
+  sowingDate: string | null;
+  irrigationMethod: string;
+  photoUrl?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+}) {
+  const soil = SOIL_DEFAULTS[input.soilType] ?? SOIL_DEFAULTS.Loam;
+  const today = new Date().toISOString().slice(0, 10);
+  const { data, error } = await supabase
+    .from("field_blocks")
+    .insert({
+      user_id: input.userId,
+      name: input.name,
+      area_ha: input.areaHa,
+      soil_type: input.soilType,
+      crop: input.crop,
+      sowing_date: input.sowingDate,
+      irrigation_method: input.irrigationMethod,
+      photo_url: input.photoUrl ?? null,
+      latitude: input.latitude ?? null,
+      longitude: input.longitude ?? null,
+      health: input.crop ? 78 : 0,
+      disease_risk: input.crop ? 22 : 0,
+      last_scan_date: today,
+      ...soil,
+    })
+    .select()
+    .single();
+  if (error) throw error;
+  return data as BlockRow;
+}
+
+export async function deleteBlock(blockId: string) {
+  const { error } = await supabase.from("field_blocks").delete().eq("id", blockId);
+  if (error) throw error;
 }
 
 export async function fetchCompletions(userId: string) {
@@ -190,6 +259,8 @@ export async function createFarm(input: CreateFarmInput) {
     health: 78,
     disease_risk: 22,
     last_scan_date: today,
+    irrigation_method: "rainfed",
+    photo_url: null,
     ...soil,
   }));
 
@@ -206,6 +277,8 @@ export async function createFarm(input: CreateFarmInput) {
       health: 0,
       disease_risk: 0,
       last_scan_date: today,
+      irrigation_method: "rainfed",
+      photo_url: null,
       ...soil,
     } as (typeof blocks)[number]);
   }

@@ -1,19 +1,55 @@
+import { useState } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
-import { ArrowLeft, Droplets, FlaskConical, ScanLine, ShieldAlert } from "lucide-react";
+import {
+  AreaChart,
+  Area,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+} from "recharts";
+import {
+  ArrowLeft,
+  Droplets,
+  FlaskConical,
+  ScanLine,
+  ShieldAlert,
+  Pencil,
+  Plus,
+} from "lucide-react";
 import { useFarm } from "@/lib/farm-store";
 import { blockEconomics, formatDate, formatINR } from "@/lib/farm";
 import ActionCard from "@/components/app/action-card";
-import { EmptyState, Meter, PageBody, PageHeader, Panel, Pill, SectionHeading, StatTile } from "@/components/app/primitives";
+import {
+  EmptyState,
+  Meter,
+  PageBody,
+  PageHeader,
+  Panel,
+  PhotoHero,
+  Pill,
+  SectionHeading,
+  StatTile,
+} from "@/components/app/primitives";
+import { cropPhoto, IRRIGATION_SPRINKLER } from "@/lib/photography";
+import BlockEditor from "@/components/app/block-editor";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_app/fields/$blockId")({
   head: ({ params }) => ({
     meta: [
       { title: `Block ${params.blockId.toUpperCase()} — PREDI-FARM X` },
-      { name: "description", content: "Crop stage, soil, water balance, disease pressure and the reconciled task list for this field block." },
+      {
+        name: "description",
+        content:
+          "Crop stage, soil, water balance, disease pressure and the reconciled task list for this field block.",
+      },
       { property: "og:title", content: `Block ${params.blockId.toUpperCase()} — PREDI-FARM X` },
-      { property: "og:description", content: "Everything happening in one field block, in one place." },
+      {
+        property: "og:description",
+        content: "Everything happening in one field block, in one place.",
+      },
     ],
   }),
   component: BlockPage,
@@ -27,33 +63,63 @@ function BlockPage() {
   const state = cropStateFor(block.id);
   const econ = blockEconomics(block, state);
   const actions = actionsFor(block.id);
+  const [editorOpen, setEditorOpen] = useState(false);
+
+  const heroPhoto = block.photoUrl
+    ? { url: block.photoUrl, alt: block.name, position: "center" }
+    : cropPhoto(block.crop);
 
   const waterSeries = forecast.map((d, i) => ({
     day: d.label,
     moisture: Math.max(
       12,
-      Math.min(95, block.soil.moisture + forecast.slice(0, i + 1).reduce((s, x) => s + x.rainMm * 1.1, 0) - i * 4),
+      Math.min(
+        95,
+        block.soil.moisture +
+          forecast.slice(0, i + 1).reduce((s, x) => s + x.rainMm * 1.1, 0) - i * 4,
+      ),
     ),
   }));
 
   return (
     <>
-      <PageHeader
-        eyebrow={
-          state ? `${state.crop.label} · ${state.crop.season} · day ${state.dap}` : "Fallow block"
-        }
+      <PhotoHero
+        photo={heroPhoto}
+        eyebrow={state ? `${state.crop.label} · ${state.crop.season} · day ${state.dap}` : "Fallow block"}
         title={`${block.name} — ${state ? state.stage.name : "ready for a new crop"}`}
-        lede={state ? state.stage.focus : `${block.areaHa} ha of ${block.soilType} with nothing growing. This is the one place a crop decision is still open.`}
+        lede={
+          state
+            ? state.stage.focus
+            : `${block.areaHa} ha of ${block.soilType} with nothing growing. This is the one place a crop decision is still open.`
+        }
         actions={
-          <Link
-            to="/fields"
-            preload="intent"
-            className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-glass-border bg-surface-1/60 px-4 text-sm font-medium hover:bg-surface-2"
-          >
-            <ArrowLeft className="size-4" /> All fields
-          </Link>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              to="/fields"
+              preload="intent"
+              className="inline-flex min-h-11 items-center gap-2 rounded-full border border-primary-foreground/25 bg-primary-foreground/10 px-4 text-sm font-medium text-primary-foreground backdrop-blur-md transition-colors hover:bg-primary-foreground/20"
+            >
+              <ArrowLeft className="size-4" /> All fields
+            </Link>
+            <button
+              onClick={() => setEditorOpen(true)}
+              className="inline-flex min-h-11 items-center gap-2 rounded-full bg-primary px-4 text-sm font-semibold text-primary-foreground transition-shadow hover:shadow-[0_18px_46px_-18px_oklch(0.75_0.17_155/0.95)]"
+            >
+              <Pencil className="size-4" /> Edit block
+            </button>
+          </div>
+        }
+        kicker={
+          <div className="mt-6 flex flex-wrap gap-2">
+            <Pill tone="muted">
+              <Droplets className="size-3" /> {block.irrigationMethod}
+            </Pill>
+            <Pill tone="muted">{block.soilType}</Pill>
+            <Pill tone="muted">{block.areaHa} ha</Pill>
+          </div>
         }
       />
+
       <PageBody>
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
           <StatTile label="Area" value={block.areaHa} unit="ha" sub={block.soilType} />
@@ -83,7 +149,10 @@ function BlockPage() {
 
         {state && (
           <Panel className="p-5">
-            <SectionHeading title="Where the crop is in its life" hint={`Sown ${state.dap} days ago · harvest around ${formatDate(state.harvestDate)}`} />
+            <SectionHeading
+              title="Where the crop is in its life"
+              hint={`Sown ${state.dap} days ago · harvest around ${formatDate(state.harvestDate)}`}
+            />
             <ol className="grid gap-2 sm:grid-cols-3 lg:grid-cols-6">
               {state.crop.stages.map((s, i) => {
                 const done = i < state.stageIndex;
@@ -100,7 +169,16 @@ function BlockPage() {
                           : "border-dashed border-border/60",
                     )}
                   >
-                    <p className={cn("text-xs font-semibold", current ? "text-primary" : done ? "text-foreground" : "text-muted-foreground")}>
+                    <p
+                      className={cn(
+                        "text-xs font-semibold",
+                        current
+                          ? "text-primary"
+                          : done
+                            ? "text-foreground"
+                            : "text-muted-foreground",
+                      )}
+                    >
                       {s.name}
                     </p>
                     <p className="mt-1 text-[10px] text-muted-foreground">day {s.from}+</p>
@@ -111,7 +189,8 @@ function BlockPage() {
             <Meter className="mt-4" value={state.progress * 100} />
             {state.locked && (
               <p className="mt-3 text-xs text-muted-foreground">
-                This crop is past the point of switching. Advice for this block is about protecting the standing crop, not replacing it.
+                This crop is past the point of switching. Advice for this block is about protecting
+                the standing crop, not replacing it.
               </p>
             )}
           </Panel>
@@ -119,7 +198,10 @@ function BlockPage() {
 
         <div className="grid gap-6 xl:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
           <section>
-            <SectionHeading title="What this block needs" hint="Already reconciled against the forecast and the pre-harvest interval." />
+            <SectionHeading
+              title="What this block needs"
+              hint="Already reconciled against the forecast and the pre-harvest interval."
+            />
             {actions.length ? (
               <div className="grid gap-3">
                 {actions.map((a) => (
@@ -127,13 +209,21 @@ function BlockPage() {
                 ))}
               </div>
             ) : (
-              <EmptyState icon={ScanLine} title="Nothing pending here" body="Moisture, nutrition and disease pressure are all inside safe bands for this stage." />
+              <EmptyState
+                icon={ScanLine}
+                title="Nothing pending here"
+                body="Moisture, nutrition and disease pressure are all inside safe bands for this stage."
+              />
             )}
           </section>
 
           <div className="space-y-6">
             <Panel className="p-5">
-              <SectionHeading title="Water balance" hint="Projected moisture with the forecast applied" icon={Droplets} />
+              <SectionHeading
+                title="Water balance"
+                hint="Projected moisture with the forecast applied"
+                icon={Droplets}
+              />
               <div className="h-44">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={waterSeries} margin={{ left: -22, right: 6, top: 6 }}>
@@ -144,8 +234,18 @@ function BlockPage() {
                       </linearGradient>
                     </defs>
                     <CartesianGrid stroke="var(--color-border)" vertical={false} />
-                    <XAxis dataKey="day" tick={{ fontSize: 10, fill: "var(--color-muted-foreground)" }} tickLine={false} axisLine={false} />
-                    <YAxis tick={{ fontSize: 10, fill: "var(--color-muted-foreground)" }} tickLine={false} axisLine={false} domain={[0, 100]} />
+                    <XAxis
+                      dataKey="day"
+                      tick={{ fontSize: 10, fill: "var(--color-muted-foreground)" }}
+                      tickLine={false}
+                      axisLine={false}
+                    />
+                    <YAxis
+                      tick={{ fontSize: 10, fill: "var(--color-muted-foreground)" }}
+                      tickLine={false}
+                      axisLine={false}
+                      domain={[0, 100]}
+                    />
                     <Tooltip
                       contentStyle={{
                         background: "var(--color-surface-2)",
@@ -156,14 +256,24 @@ function BlockPage() {
                       }}
                       formatter={(v: number) => [`${Math.round(v)}%`, "Moisture"]}
                     />
-                    <Area type="monotone" dataKey="moisture" stroke="var(--color-sky)" strokeWidth={2} fill="url(#moist)" />
+                    <Area
+                      type="monotone"
+                      dataKey="moisture"
+                      stroke="var(--color-sky)"
+                      strokeWidth={2}
+                      fill="url(#moist)"
+                    />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
             </Panel>
 
             <Panel className="p-5">
-              <SectionHeading title="Soil card" hint={`pH ${block.soil.ph} · OC ${block.soil.organicCarbon}%`} icon={FlaskConical} />
+              <SectionHeading
+                title="Soil card"
+                hint={`pH ${block.soil.ph} · OC ${block.soil.organicCarbon}%`}
+                icon={FlaskConical}
+              />
               <ul className="space-y-3">
                 {[
                   { l: "Nitrogen", v: block.soil.n, target: 240, unit: "kg/ha" },
@@ -179,7 +289,11 @@ function BlockPage() {
                           {n.v} / {n.target} {n.unit}
                         </span>
                       </div>
-                      <Meter className="mt-1.5" value={(n.v / n.target) * 100} tone={ok ? "good" : "warn"} />
+                      <Meter
+                        className="mt-1.5"
+                        value={(n.v / n.target) * 100}
+                        tone={ok ? "good" : "warn"}
+                      />
                     </li>
                   );
                 })}
@@ -194,6 +308,8 @@ function BlockPage() {
           </div>
         </div>
       </PageBody>
+
+      <BlockEditor open={editorOpen} onClose={() => setEditorOpen(false)} blockId={block.id} />
     </>
   );
 }

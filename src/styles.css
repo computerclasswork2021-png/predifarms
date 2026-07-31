@@ -250,6 +250,50 @@
   text-wrap: balance;
 }
 
+/* Block editor form controls */
+@utility input {
+  height: 2.75rem;
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid var(--glass-border);
+  background: var(--surface-2);
+  padding: 0 0.75rem;
+  font-size: 0.875rem;
+  color: var(--foreground);
+  outline: none;
+  transition: border-color 200ms ease;
+  &:focus {
+    border-color: oklch(0.75 0.17 155 / 45%);
+  }
+  &:disabled {
+    opacity: 0.5;
+  }
+}
+
+@utility chip {
+  border-radius: 9999px;
+  border: 1px solid var(--glass-border);
+  padding: 0.5rem 1rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  transition: all 200ms ease;
+}
+
+@utility chip-active {
+  border-color: oklch(0.75 0.17 155 / 50%);
+  background: oklch(0.75 0.17 155 / 12%);
+  color: var(--foreground);
+}
+
+@utility chip-idle {
+  color: var(--muted-foreground);
+  background: transparent;
+  &:hover {
+    color: var(--foreground);
+    border-color: oklch(0.75 0.17 155 / 25%);
+  }
+}
+
 /* ------------------------------------------------------------------ */
 /* Surfaces                                                            */
 /* ------------------------------------------------------------------ */

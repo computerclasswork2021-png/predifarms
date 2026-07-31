@@ -19,6 +19,8 @@ import {
   type WeatherDay,
 } from "./farm";
 import {
+  createBlock as createBlockRow,
+  deleteBlock as deleteBlockRow,
   fetchBlocks,
   fetchCompletions,
   fetchProfile,
@@ -60,6 +62,16 @@ export interface NewTask {
   blockId?: string | null;
 }
 
+export interface NewBlock {
+  name: string;
+  areaHa: number;
+  soilType: string;
+  crop: string | null;
+  sowingDate: string | null;
+  irrigationMethod: string;
+  photoUrl?: string | null;
+}
+
 interface FarmContextValue {
   today: Date;
   userId: string;
@@ -86,7 +98,9 @@ interface FarmContextValue {
   addTask: (task: NewTask) => Promise<void>;
   toggleTask: (id: string, done: boolean) => Promise<void>;
   deleteTask: (id: string) => Promise<void>;
+  addBlock: (block: NewBlock) => Promise<void>;
   updateBlock: (id: string, patch: Partial<BlockRow>) => Promise<void>;
+  removeBlock: (id: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -254,6 +268,26 @@ export function FarmProvider({ userId, children }: { userId: string; children: R
         const { error } = await supabase.from("field_blocks").update(patch).eq("id", id);
         if (error) throw error;
         await invalidate("blocks");
+      },
+      addBlock: async (block) => {
+        await createBlockRow({
+          userId,
+          name: block.name,
+          areaHa: block.areaHa,
+          soilType: block.soilType,
+          crop: block.crop,
+          sowingDate: block.sowingDate,
+          irrigationMethod: block.irrigationMethod,
+          photoUrl: block.photoUrl ?? null,
+          latitude: profile.latitude ?? null,
+          longitude: profile.longitude ?? null,
+        });
+        await invalidate("blocks");
+      },
+      removeBlock: async (id) => {
+        await deleteBlockRow(id);
+        await invalidate("blocks");
+        await invalidate("tasks");
       },
       signOut: async () => {
         await qc.cancelQueries();

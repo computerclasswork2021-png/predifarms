@@ -4,11 +4,14 @@ import {
   useInView,
   useMotionValue,
   useReducedMotion,
+  useScroll,
   useSpring,
+  useTransform,
   animate,
 } from "motion/react";
 import { cn } from "@/lib/utils";
 import type { LucideIcon } from "lucide-react";
+import type { Photo } from "@/lib/photography";
 
 /* ------------------------------------------------------------------ */
 /* Surfaces                                                            */
@@ -579,5 +582,172 @@ export function Reveal({
     >
       {children}
     </motion.div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Photography                                                         */
+/* ------------------------------------------------------------------ */
+
+/**
+ * PhotoHero — a full-width editorial hero with a graded photograph.
+ * Text sits in the natural negative space; the image breathes with a
+ * subtle parallax on scroll. Overlay is consistent across the whole app.
+ */
+export function PhotoHero({
+  photo,
+  eyebrow,
+  title,
+  lede,
+  actions,
+  height = "h-[58vh] min-h-[420px]",
+  align = "bottom",
+  kicker,
+}: {
+  photo: Photo;
+  eyebrow?: string;
+  title?: string;
+  lede?: string;
+  actions?: ReactNode;
+  height?: string;
+  align?: "top" | "center" | "bottom";
+  kicker?: ReactNode;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const reduced = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const y = useTransform(scrollYProgress, [0, 1], reduced ? (["0%", "0%"] as string[]) : (["-8%", "12%"] as string[]));
+  const scale = useTransform(scrollYProgress, [0, 1], reduced ? [1, 1] : [1.08, 1.18]);
+
+  const alignClass =
+    align === "top" ? "items-start pt-16" : align === "center" ? "items-center" : "items-end pb-16";
+
+  return (
+    <section ref={ref} className={cn("relative overflow-hidden bg-foreground", height)}>
+      <motion.div
+        style={{ y, scale } as unknown as React.CSSProperties}
+        className="absolute inset-0 will-change-transform"
+      >
+        <img
+          src={photo.url}
+          alt={photo.alt}
+          loading="eager"
+          className="h-full w-full object-cover"
+          style={{ objectPosition: photo.position ?? "center" }}
+        />
+      </motion.div>
+      {/* consistent grade: darken the bottom for text legibility */}
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,oklch(0.08_0.02_155/0.25)_0%,oklch(0.08_0.02_155/0.55)_55%,oklch(0.08_0.02_155/0.82)_100%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,oklch(0.08_0.02_155/0.45)_0%,transparent_60%)]" />
+
+      <div className={cn("relative z-10 flex h-full flex-col justify-end px-5 sm:px-8 lg:px-14", alignClass)}>
+        <div className="max-w-2xl">
+          {eyebrow && (
+            <motion.p
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              className="type-eyebrow text-primary-foreground/85"
+            >
+              {eyebrow}
+            </motion.p>
+          )}
+          {title && (
+            <motion.h1
+              initial={{ opacity: 0, y: 22, filter: "blur(8px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              transition={{ duration: 0.85, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
+              className="type-title mt-4 text-primary-foreground"
+            >
+              {title}
+            </motion.h1>
+          )}
+          {lede && (
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              className="mt-5 max-w-xl text-[0.95rem] leading-relaxed text-primary-foreground/80"
+            >
+              {lede}
+            </motion.p>
+          )}
+          {actions && (
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.32, ease: [0.16, 1, 0.3, 1] }}
+              className="mt-8 flex flex-wrap gap-3"
+            >
+              {actions}
+            </motion.div>
+          )}
+          {kicker}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/**
+ * PhotoCard — a panel whose cover image earns its place. The photo occupies
+ * the top, the body sits on the surface below. Hover lifts the image.
+ */
+export function PhotoCard({
+  photo,
+  children,
+  className,
+  overlay = "bg-[linear-gradient(180deg,transparent_40%,oklch(0.08_0.02_155/0.78)_100%)]",
+  imageClassName,
+  badge,
+}: {
+  photo: Photo;
+  children?: ReactNode;
+  className?: string;
+  overlay?: string;
+  imageClassName?: string;
+  badge?: ReactNode;
+}) {
+  const reduced = useReducedMotion();
+  return (
+    <div
+      className={cn(
+        "group relative overflow-hidden rounded-3xl border border-glass-border bg-surface-1/55 backdrop-blur-xl grain",
+        "transition-[border-color,box-shadow,transform] duration-500 hover:border-primary/25 hover:shadow-[0_30px_80px_-46px_oklch(0.75_0.17_155/0.7)]",
+        className,
+      )}
+    >
+      <div className="relative overflow-hidden">
+        <motion.img
+          src={photo.url}
+          alt={photo.alt}
+          loading="lazy"
+          initial={false}
+          whileHover={reduced ? undefined : { scale: 1.06 }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className={cn("h-full w-full object-cover", imageClassName)}
+          style={{ objectPosition: photo.position ?? "center" }}
+        />
+        <div className={cn("absolute inset-0", overlay)} />
+        {badge && <div className="absolute left-4 top-4 z-10">{badge}</div>}
+      </div>
+      {children && <div className="relative p-5">{children}</div>}
+    </div>
+  );
+}
+
+/** A thin photographic section divider — gives pages a breathing beat. */
+export function PhotoDivider({ photo, className }: { photo: Photo; className?: string }) {
+  return (
+    <div className={cn("relative h-40 overflow-hidden rounded-3xl", className)}>
+      <img
+        src={photo.url}
+        alt={photo.alt}
+        loading="lazy"
+        className="h-full w-full object-cover"
+        style={{ objectPosition: photo.position ?? "center" }}
+      />
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,oklch(0.08_0.02_155/0.55),transparent_50%,oklch(0.08_0.02_155/0.55))]" />
+    </div>
   );
 }
