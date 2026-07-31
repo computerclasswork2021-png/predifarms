@@ -169,6 +169,7 @@
   html {
     @apply bg-background;
     -webkit-tap-highlight-color: transparent;
+    font-size: calc(16px * var(--font-scale, 1));
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
@@ -197,7 +198,7 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: oklch(1 0 0 / 12%);
+  background: var(--input);
   border-radius: 99px;
 }
 ::-webkit-scrollbar-thumb:hover {
@@ -254,15 +255,15 @@
 /* ------------------------------------------------------------------ */
 
 @utility glass {
-  background: oklch(1 0 0 / 4%);
+  background: var(--glass-bg);
   backdrop-filter: blur(20px) saturate(160%);
   border: 1px solid var(--glass-border);
 }
 
 @utility glass-strong {
-  background: oklch(0.16 0.017 155 / 72%);
+  background: var(--glass-strong-bg);
   backdrop-filter: blur(28px) saturate(180%);
-  border: 1px solid oklch(1 0 0 / 12%);
+  border: 1px solid var(--glass-border);
 }
 
 @utility glow-emerald {
@@ -272,7 +273,7 @@
 }
 
 @utility hairline {
-  border-top: 1px solid oklch(1 0 0 / 8%);
+  border-top: 1px solid var(--glass-border);
 }
 
 @utility grain {
