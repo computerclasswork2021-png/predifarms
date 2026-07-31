@@ -51,7 +51,66 @@
 }
 
 :root {
+  color-scheme: light;
+
+  --radius: 0.85rem;
+  --font-scale: 1;
+
+  --background: oklch(0.985 0.008 105);
+  --foreground: oklch(0.24 0.025 155);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.24 0.025 155);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.24 0.025 155);
+
+  --primary: oklch(0.55 0.15 155);
+  --primary-foreground: oklch(0.99 0.005 105);
+
+  --secondary: oklch(0.945 0.015 140);
+  --secondary-foreground: oklch(0.28 0.03 155);
+
+  --muted: oklch(0.955 0.012 130);
+  --muted-foreground: oklch(0.46 0.022 150);
+
+  --accent: oklch(0.94 0.02 150);
+  --accent-foreground: oklch(0.26 0.03 155);
+
+  --destructive: oklch(0.55 0.19 27);
+  --destructive-foreground: oklch(0.99 0.005 105);
+
+  --border: oklch(0.24 0.02 155 / 12%);
+  --input: oklch(0.24 0.02 155 / 16%);
+  --ring: oklch(0.55 0.15 155 / 45%);
+
+  --chart-1: oklch(0.55 0.15 155);
+  --chart-2: oklch(0.66 0.14 72);
+  --chart-3: oklch(0.55 0.12 225);
+  --chart-4: oklch(0.6 0.13 110);
+  --chart-5: oklch(0.55 0.16 27);
+
+  --emerald: oklch(0.55 0.15 155);
+  --amber: oklch(0.64 0.14 68);
+  --sky: oklch(0.55 0.12 228);
+  --soil: oklch(0.5 0.09 55);
+
+  --surface-1: oklch(1 0 0);
+  --surface-2: oklch(0.965 0.01 120);
+  --surface-3: oklch(0.93 0.014 130);
+  --glass-border: oklch(0.24 0.02 155 / 10%);
+  --glass-bg: oklch(1 0 0 / 62%);
+  --glass-strong-bg: oklch(1 0 0 / 82%);
+
+  --text-display: clamp(2.6rem, 6.4vw, 5.4rem);
+  --text-title: clamp(1.9rem, 3.6vw, 3.1rem);
+  --text-section: clamp(1.3rem, 1.9vw, 1.75rem);
+}
+
+.dark {
   color-scheme: dark;
+
+  --glass-bg: oklch(1 0 0 / 4%);
+  --glass-strong-bg: oklch(0.16 0.017 155 / 72%);
+
 
   --radius: 0.85rem;
 
@@ -110,6 +169,7 @@
   html {
     @apply bg-background;
     -webkit-tap-highlight-color: transparent;
+    font-size: calc(16px * var(--font-scale, 1));
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
@@ -138,7 +198,7 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: oklch(1 0 0 / 12%);
+  background: var(--input);
   border-radius: 99px;
 }
 ::-webkit-scrollbar-thumb:hover {
@@ -195,15 +255,15 @@
 /* ------------------------------------------------------------------ */
 
 @utility glass {
-  background: oklch(1 0 0 / 4%);
+  background: var(--glass-bg);
   backdrop-filter: blur(20px) saturate(160%);
   border: 1px solid var(--glass-border);
 }
 
 @utility glass-strong {
-  background: oklch(0.16 0.017 155 / 72%);
+  background: var(--glass-strong-bg);
   backdrop-filter: blur(28px) saturate(180%);
-  border: 1px solid oklch(1 0 0 / 12%);
+  border: 1px solid var(--glass-border);
 }
 
 @utility glow-emerald {
@@ -213,7 +273,7 @@
 }
 
 @utility hairline {
-  border-top: 1px solid oklch(1 0 0 / 8%);
+  border-top: 1px solid var(--glass-border);
 }
 
 @utility grain {

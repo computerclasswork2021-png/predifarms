@@ -1,7 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { ArrowRight, CloudRain, Leaf, LineChart, Sprout } from "lucide-react";
+import { lazy, Suspense } from "react";
 import LiquidEther from "@/components/reactbits/liquid-ether";
+import MagicRings from "@/components/reactbits/magic-rings";
+import StaggeredMenu from "@/components/reactbits/staggered-menu";
+
+const FluidGlass = lazy(() => import("@/components/reactbits/fluid-glass-3d"));
 import CardSwap, { type SwapCard } from "@/components/reactbits/card-swap";
 import { KeyFigure, Reveal, Rule } from "@/components/app/primitives";
 
@@ -85,6 +90,9 @@ function Landing() {
       {/* Hero */}
       <section className="relative flex min-h-[92vh] flex-col justify-end overflow-hidden">
         <LiquidEther className="absolute inset-0" intensity={0.85} />
+        <div className="pointer-events-none absolute inset-0 opacity-50">
+          <MagicRings opacity={0.5} blur={2} ringCount={5} />
+        </div>
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,oklch(0.11_0.018_155/0.55)_0%,transparent_35%,var(--background)_98%)]" />
 
         <header className="absolute inset-x-0 top-0 z-10 flex items-center justify-between px-5 py-6 sm:px-8 lg:px-14">
@@ -94,12 +102,23 @@ function Landing() {
             </span>
             <span className="text-sm font-semibold tracking-tight">PREDI-FARM X</span>
           </span>
-          <Link
-            to="/auth"
-            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Sign in
-          </Link>
+          <span className="flex items-center gap-3">
+            <Link
+              to="/auth"
+              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+            >
+              Sign in
+            </Link>
+            <StaggeredMenu
+              items={[
+                { label: "Today", link: "/dashboard" },
+                { label: "Fields", link: "/fields" },
+                { label: "Soil", link: "/soil" },
+                { label: "Mandi", link: "/mandi" },
+                { label: "Settings", link: "/settings" },
+              ]}
+            />
+          </span>
         </header>
 
         <div className="relative z-10 px-5 pb-20 sm:px-8 lg:px-14">

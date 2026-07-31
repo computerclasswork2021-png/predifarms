@@ -34,6 +34,7 @@ import {
 } from "@/components/app/primitives";
 import FluidGlass from "@/components/reactbits/fluid-glass";
 import Atmosphere from "@/components/app/atmosphere";
+import FarmClock from "@/components/app/farm-clock";
 import TaskBoard from "@/components/app/task-board";
 import { cn } from "@/lib/utils";
 
@@ -136,9 +137,13 @@ function DashboardPage() {
               {current.humidity}% humidity · {current.windKph} kph wind · live for {farm.village}
             </p>
           </div>
-          <p className="max-w-[13rem] text-right text-xs text-muted-foreground">
-            {formatDate(today)}
-          </p>
+          <div className="flex max-w-[13rem] flex-col items-end gap-2 text-right">
+            <FarmClock
+              className="rounded-full border border-glass-border bg-surface-1/60 px-3 py-2 backdrop-blur-xl"
+              showDate={false}
+            />
+            <p className="text-xs text-muted-foreground">{formatDate(today)}</p>
+          </div>
         </div>
       </div>
 

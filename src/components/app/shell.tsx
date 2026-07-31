@@ -5,6 +5,9 @@ import { Leaf, PanelLeftClose, PanelLeft, Bell, CloudSun, X, LogOut } from "luci
 import { cn } from "@/lib/utils";
 import { ALL_NAV, MOBILE_NAV, NAV_GROUPS } from "./nav";
 import { useFarm } from "@/lib/farm-store";
+import { useT } from "@/lib/i18n";
+import FarmClock from "@/components/app/farm-clock";
+import { LanguageSwitch, ThemeSwitch } from "@/components/app/preference-controls";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,14 +38,15 @@ function BrandMark({ compact }: { compact?: boolean }) {
 
 function NavList({ collapsed, onNavigate }: { collapsed: boolean; onNavigate?: () => void }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const t = useT();
 
   return (
     <nav className="flex-1 space-y-6 overflow-y-auto overflow-x-hidden px-2 pb-6">
       {NAV_GROUPS.map((group) => (
-        <div key={group.title}>
+        <div key={t(group.title)}>
           {!collapsed && (
             <p className="mb-1.5 px-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/70">
-              {group.title}
+              {t(group.title)}
             </p>
           )}
           <ul className="space-y-0.5">
@@ -56,7 +60,7 @@ function NavList({ collapsed, onNavigate }: { collapsed: boolean; onNavigate?: (
                     to={item.to}
                     onClick={onNavigate}
                     preload="intent"
-                    title={collapsed ? item.label : undefined}
+                    title={collapsed ? t(item.label) : undefined}
                     className={cn(
                       "group relative flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm transition-colors",
                       active
@@ -73,7 +77,7 @@ function NavList({ collapsed, onNavigate }: { collapsed: boolean; onNavigate?: (
                     )}
                     <Icon className="relative size-4 shrink-0" />
                     {!collapsed && (
-                      <span className="relative min-w-0 truncate font-medium">{item.label}</span>
+                      <span className="relative min-w-0 truncate font-medium">{t(item.label)}</span>
                     )}
                   </Link>
                 </li>
@@ -111,6 +115,7 @@ function TopBar({
     .toUpperCase();
 
 
+  const t = useT();
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-border/70 bg-background/80 px-4 backdrop-blur-xl sm:px-6">
       <button
@@ -122,20 +127,23 @@ function TopBar({
       </button>
       <button
         onClick={onOpenMobileNav}
-        aria-label="Open navigation"
+        aria-label={t("Open navigation")}
         className="grid size-9 place-items-center rounded-lg text-muted-foreground hover:bg-surface-2 lg:hidden"
       >
         <PanelLeft className="size-4" />
       </button>
 
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-semibold">{current?.label ?? "PREDI-FARM X"}</p>
+        <p className="truncate text-sm font-semibold">{current ? t(current.label) : "PREDI-FARM X"}</p>
         <p className="hidden truncate text-[11px] text-muted-foreground sm:block">
-          {current?.description}
+          {current ? t(current.description) : null}
         </p>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5">
+        <FarmClock className="hidden rounded-full bg-surface-2 px-3 py-1.5 md:flex" showDate={false} />
+        <LanguageSwitch compact />
+        <ThemeSwitch compact />
         <span className="hidden items-center gap-1.5 rounded-full bg-surface-2 px-3 py-1.5 text-xs text-muted-foreground sm:inline-flex">
           <CloudSun className="size-3.5 text-amber" />
           {weatherNow.tempC}° now · {today.rainMm} mm today
@@ -157,7 +165,7 @@ function TopBar({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
-              aria-label="Account menu"
+              aria-label={t("Account menu")}
               className="grid size-9 place-items-center rounded-full bg-primary/15 text-xs font-semibold text-primary ring-1 ring-primary/25 transition-colors hover:bg-primary/25"
             >
               {initials || "PF"}
@@ -172,11 +180,11 @@ function TopBar({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link to="/settings">Farm settings</Link>
+              <Link to="/settings">{t("Farm settings")}</Link>
             </DropdownMenuItem>
             <DropdownMenuItem onSelect={() => void signOut()}>
               <LogOut className="size-4" />
-              Sign out
+              {t("Sign out")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -188,6 +196,7 @@ function TopBar({
 
 function MobileNavBar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const t = useT();
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border/70 bg-background/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl lg:hidden">
       <ul className="grid grid-cols-5">
@@ -205,7 +214,7 @@ function MobileNavBar() {
                 )}
               >
                 <Icon className="size-[18px]" />
-                {item.short}
+                {t(item.short)}
               </Link>
             </li>
           );
@@ -216,6 +225,7 @@ function MobileNavBar() {
 }
 
 export default function AppShell({ children }: { children: ReactNode }) {
+  const t = useT();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -258,7 +268,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
                 <BrandMark />
                 <button
                   onClick={() => setMobileOpen(false)}
-                  aria-label="Close navigation"
+                  aria-label={t("Close navigation")}
                   className="grid size-9 place-items-center rounded-lg text-muted-foreground hover:bg-surface-2"
                 >
                   <X className="size-4" />
