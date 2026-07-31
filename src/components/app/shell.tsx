@@ -5,6 +5,9 @@ import { Leaf, PanelLeftClose, PanelLeft, Bell, CloudSun, X, LogOut } from "luci
 import { cn } from "@/lib/utils";
 import { ALL_NAV, MOBILE_NAV, NAV_GROUPS } from "./nav";
 import { useFarm } from "@/lib/farm-store";
+import { useT } from "@/lib/i18n";
+import FarmClock from "@/components/app/farm-clock";
+import { LanguageSwitch, ThemeSwitch } from "@/components/app/preference-controls";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,14 +38,15 @@ function BrandMark({ compact }: { compact?: boolean }) {
 
 function NavList({ collapsed, onNavigate }: { collapsed: boolean; onNavigate?: () => void }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const t = useT();
 
   return (
     <nav className="flex-1 space-y-6 overflow-y-auto overflow-x-hidden px-2 pb-6">
       {NAV_GROUPS.map((group) => (
-        <div key={group.title}>
+        <div key={t(group.title)}>
           {!collapsed && (
             <p className="mb-1.5 px-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/70">
-              {group.title}
+              {t(group.title)}
             </p>
           )}
           <ul className="space-y-0.5">
@@ -135,7 +139,10 @@ function TopBar({
         </p>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5">
+        <FarmClock className="hidden rounded-full bg-surface-2 px-3 py-1.5 md:flex" showDate={false} />
+        <LanguageSwitch compact />
+        <ThemeSwitch compact />
         <span className="hidden items-center gap-1.5 rounded-full bg-surface-2 px-3 py-1.5 text-xs text-muted-foreground sm:inline-flex">
           <CloudSun className="size-3.5 text-amber" />
           {weatherNow.tempC}° now · {today.rainMm} mm today
